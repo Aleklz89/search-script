@@ -70,9 +70,9 @@ var query = '';
 var inputClass = '';
 var timeoutId;
 
-function correctWord(word) { 
+function correctWord(word) {
 
-  
+
   return fetch('https://search-module-chi.vercel.app/api/correct', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -81,20 +81,20 @@ function correctWord(word) {
 
     return response.json();
   }).then(function (data) {
- 
-    
+
+
     if (data.incorrectWord && data.correctWord) {
 
-      
+
       query = query.split(' ').map(function (w) {
         return w.toLowerCase() === data.incorrectWord.toLowerCase() ? data.correctWord : w;
       }).join(' ');
 
- 
-      
-   
+
+
+
       document.getElementById('search-input').value = query;
-      
+
       applyBlinkEffect();
     } else {
       console.log("Исправление не найдено или данные пусты.");
@@ -117,7 +117,7 @@ function handleKeyDown(event) {
 }
 
 function sortProducts(products, field, direction) {
-  return products.slice().sort(function(a, b) {
+  return products.slice().sort(function (a, b) {
     var valueA = a[field];
     var valueB = b[field];
     return direction === 'asc' ? (valueA > valueB ? 1 : -1) : (valueA < valueB ? 1 : -1);
@@ -160,9 +160,188 @@ function filterProductsByPrice(products, priceRange) {
 
 function filterProductsByRating(products, ratingRange) {
   return products.filter(function (product) {
+    
+    if (product.rating === undefined || product.rating === null) {
+      return true; 
+    }
+    
     return product.rating >= ratingRange.min && product.rating <= ratingRange.max;
   });
 }
+
+function filterProductsByColor(products, selectedColors) {
+  if (!selectedColors || selectedColors.length === 0) {
+    return products; 
+  }
+  return products.filter(function (product) {
+    return selectedColors.includes(product.color.toLowerCase());
+  });
+}
+
+function filterProductsBySize(products, selectedSizes) {
+  if (!selectedSizes || selectedSizes.length === 0) {
+    return products; 
+  }
+  return products.filter(function (product) {
+    
+    return selectedSizes.includes(product.size);
+  });
+}
+
+
+function filterProductsByManufacturer(products, selectedManufacturers) {
+  if (!selectedManufacturers || selectedManufacturers.length === 0) {
+    return products;
+  }
+  return products.filter(function (product) {
+    return selectedManufacturers.includes(product.manufacturer);
+  });
+}
+
+
+function filterProductsByMaterial(products, selectedMaterials) {
+  if (!selectedMaterials || selectedMaterials.length === 0) {
+    return products;
+  }
+  return products.filter(function (product) {
+    return selectedMaterials.includes(product.material);
+  });
+}
+
+
+function filterProductsByEnergyEfficiency(products, selectedEfficiency) {
+  if (!selectedEfficiency || selectedEfficiency.length === 0) {
+    return products;
+  }
+  return products.filter(function (product) {
+    return selectedEfficiency.includes(product.energyEfficiency);
+  });
+}
+
+
+function filterProductsByStockStatus(products, selectedStatuses) {
+  if (!selectedStatuses || selectedStatuses.length === 0) {
+    return products;
+  }
+  return products.filter(function (product) {
+    return selectedStatuses.includes(product.stockStatus);
+  });
+}
+
+
+function filterProductsByNumberOfReviews(products, reviewRange) {
+  if (!reviewRange) {
+    return products;
+  }
+  return products.filter(function (product) {
+    return product.reviews >= reviewRange.min && product.reviews <= reviewRange.max;
+  });
+}
+
+
+function filterProductsByCondition(products, selectedConditions) {
+  if (!selectedConditions || selectedConditions.length === 0) {
+    return products;
+  }
+  return products.filter(function (product) {
+    return selectedConditions.includes(product.condition);
+  });
+}
+
+
+function filterProductsByWeight(products, weightRange) {
+  if (!weightRange) {
+    return products;
+  }
+  return products.filter(function (product) {
+    return product.weight >= weightRange.min && product.weight <= weightRange.max;
+  });
+}
+
+
+function filterProductsByUsageType(products, selectedUsageTypes) {
+  if (!selectedUsageTypes || selectedUsageTypes.length === 0) {
+    return products;
+  }
+  return products.filter(function (product) {
+    return selectedUsageTypes.includes(product.usageType);
+  });
+}
+
+
+function filterProductsBySeasonalTrends(products, selectedTrends) {
+  if (!selectedTrends || selectedTrends.length === 0) {
+    return products;
+  }
+  return products.filter(function (product) {
+    return selectedTrends.includes(product.seasonalTrend);
+  });
+}
+
+
+function filterProductsByWarranty(products, warrantyRange) {
+  if (!warrantyRange) {
+    return products;
+  }
+  return products.filter(function (product) {
+    
+    return product.warranty >= warrantyRange.min && product.warranty <= warrantyRange.max;
+  });
+}
+
+
+function filterProductsByDiscount(products, discountRange) {
+  if (!discountRange) {
+    return products;
+  }
+  return products.filter(function (product) {
+    
+    return product.discount >= discountRange.min && product.discount <= discountRange.max;
+  });
+}
+
+function filterProductsByDateAdded(products, dateRange) {
+  if (!dateRange || (!dateRange.start && !dateRange.end)) {
+    return products; 
+  }
+  return products.filter(function (product) {
+    const productDate = new Date(product.dateAdded); 
+    const startDate = dateRange.start ? new Date(dateRange.start) : null;
+    const endDate = dateRange.end ? new Date(dateRange.end) : null;
+
+    
+    if (startDate && productDate < startDate) {
+      return false;
+    }
+    if (endDate && productDate > endDate) {
+      return false;
+    }
+    return true;
+  });
+}
+
+
+function filterProductsByFreeShipping(products, freeShipping) {
+  if (freeShipping === undefined || freeShipping === null) {
+    return products; 
+  }
+  return products.filter(function (product) {
+    return product.freeShipping === freeShipping; 
+  });
+}
+
+
+function filterProductsByEcoFriendly(products, ecoFriendly) {
+  if (ecoFriendly === undefined || ecoFriendly === null) {
+    return products; 
+  }
+  return products.filter(function (product) {
+    return product.ecoFriendly === ecoFriendly; 
+  });
+}
+
+
+
 
 
 function fetchSuggestions(input) {
@@ -220,39 +399,68 @@ function fetchSearchHistory(userId) {
   });
 }
 
-function searchProducts(query, userId, priceRange, ratingRange) { 
+function searchProducts(
+  query,
+  userId,
+  priceRange,
+  ratingRange,
+  selectedColors,
+  selectedSizes,
+  selectedManufacturers,
+  selectedMaterials,
+  selectedEfficiency,
+  selectedStatuses,
+  reviewRange,
+  selectedConditions,
+  weightRange,
+  selectedUsageTypes,
+  selectedTrends,
+  warrantyRange,
+  discountRange,
+  dateRange,
+  freeShipping, 
+  ecoFriendly 
+) {
   console.log('Starting product search...');
   console.log('Query:', query);
-  console.log('User ID:', userId);
-  console.log('Price Range:', priceRange);
-  console.log('Rating Range:', ratingRange);
 
   return fetch('https://search-module-chi.vercel.app/api/search', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ word: query })
   })
-  .then(function (response) {
-    console.log('Response received from API:', response);
-    if (!response.ok) {
-      console.error('Response error:', response.status, response.statusText);
-    }
-    return response.json();
-  })
-  .then(function (products) {
-    console.log('Products received from API:', products);
+    .then(function (response) {
+      if (!response.ok) {
+        console.error('Response error:', response.status, response.statusText);
+      }
+      return response.json();
+    })
+    .then(function (products) {
+      var filteredByPrice = filterProductsByPrice(products, priceRange);
+      var filteredByRating = filterProductsByRating(filteredByPrice, ratingRange);
+      var filteredByColor = filterProductsByColor(filteredByRating, selectedColors);
+      var filteredBySize = filterProductsBySize(filteredByColor, selectedSizes);
+      var filteredByManufacturer = filterProductsByManufacturer(filteredBySize, selectedManufacturers);
+      var filteredByMaterial = filterProductsByMaterial(filteredByManufacturer, selectedMaterials);
+      var filteredByEfficiency = filterProductsByEnergyEfficiency(filteredByMaterial, selectedEfficiency);
+      var filteredByStockStatus = filterProductsByStockStatus(filteredByEfficiency, selectedStatuses);
+      var filteredByReviews = filterProductsByNumberOfReviews(filteredByStockStatus, reviewRange);
+      var filteredByCondition = filterProductsByCondition(filteredByReviews, selectedConditions);
+      var filteredByWeight = filterProductsByWeight(filteredByCondition, weightRange);
+      var filteredByUsageType = filterProductsByUsageType(filteredByWeight, selectedUsageTypes);
+      var filteredBySeasonalTrends = filterProductsBySeasonalTrends(filteredByUsageType, selectedTrends);
+      var filteredByWarranty = filterProductsByWarranty(filteredBySeasonalTrends, warrantyRange);
+      var filteredByDiscount = filterProductsByDiscount(filteredByWarranty, discountRange);
+      var filteredByDateAdded = filterProductsByDateAdded(filteredByDiscount, dateRange);
+      var filteredByFreeShipping = filterProductsByFreeShipping(filteredByDateAdded, freeShipping);
+      var filteredByEcoFriendly = filterProductsByEcoFriendly(filteredByFreeShipping, ecoFriendly);
 
-    var filteredByPrice = filterProductsByPrice(products, priceRange);
-    console.log('Products after price filtering:', filteredByPrice);
+      console.log('Products after filtering:', filteredByEcoFriendly);
 
-    var filteredByRating = filterProductsByRating(filteredByPrice, ratingRange);
-    console.log('Products after rating filtering:', filteredByRating);
-
-    return filteredByPrice;
-  })
-  .catch(function (error) {
-    console.error('Error searching products:', error);
-    return [];
-  });
+      return filteredByEcoFriendly;
+    })
+    .catch(function (error) {
+      console.error('Error searching products:', error);
+      return [];
+    });
 }
-
